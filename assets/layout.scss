@@ -1,0 +1,177 @@
+@import 'variables';
+@import 'mixins';
+
+$nav-colors: $yellow, $green, $purple, $blue, $orange;
+@for $i from 1 through length($nav-colors) {
+  $color: nth($nav-colors, $i);
+  @include glow($color, $i);
+}
+
+header {
+  background: transparent;
+  padding: 20px;
+  z-index: 10;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  height: 100px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  animation-name: showHeader;
+  animation-timeline: scroll();
+  animation-timing-function: linear;
+  animation-range-start: 0;
+
+  .logo {
+    width: 100px;
+    height: 50px;
+    object-fit: contain;
+    cursor: pointer;
+  }
+
+  .navRow {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 15px;
+
+    .navItem {
+      position: relative;
+
+      &:hover::before,
+      &.active::before {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        height: 5px;
+        border-radius: 10px;
+      }
+
+      &.active::before {
+        width: 100%;
+
+      }
+
+      @for $i from 1 through length($nav-colors) {
+        &:nth-child(#{$i}) {
+          &:hover::before,
+          &.active::before {
+            background: nth($nav-colors, $i);
+            box-shadow: 0 0 20px nth($nav-colors, $i),
+            0 0 40px nth($nav-colors, $i),
+            0 0 60px nth($nav-colors, $i);
+            animation: hoverGlow $normal forwards, glow-#{$i} 1.5s infinite;
+          }
+
+        }
+      }
+    }
+
+  }
+
+  .themeBlock {
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+    img {
+      object-fit: contain;
+      width: 100px;
+      transform: rotate(180deg);
+      position: relative;
+      z-index: 2;
+      cursor: pointer;
+    }
+
+    .light {
+      position: absolute;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-around;
+      padding: 0 5px;
+
+      background: $yellow;
+      box-shadow: 0 0 20px $yellow,
+      0 0 40px $yellow,
+      0 0 60px $yellow;
+      @include shadow($yellow);
+      @include closeSaber(250px);
+      animation: shadow 1.5s infinite, closeSaber $normal forwards;
+      border-radius: 30px;
+      max-width: 250px;
+      width: 100%;
+      height: 20px;
+      cursor: pointer;
+
+      span {
+        font-size: 10px;
+        white-space: nowrap;
+        color: black;
+      }
+
+      &.active {
+        @include openSaber(250px);
+        animation: openSaber $normal forwards,
+      }
+    }
+  }
+
+  .exit {
+    cursor: pointer;
+    color: $red;
+    text-shadow: $red 1px 0 10px;
+    @include textShadow($red);
+    animation: textShadow 1.5s infinite;
+
+  }
+}
+
+@keyframes hoverGlow {
+  from {
+    width: 0;
+  }
+  to {
+    width: 100%;
+  }
+}
+
+@keyframes showHeader {
+  0% {
+    background: transparent;
+  }
+  20%, 100% {
+    background: $black;
+    box-shadow: 0px 2px 2px 2px rgba(0, 0, 0, 0.75);
+  }
+}
+
+html.light {
+  .themeBlock {
+
+    .light {
+      background: $blue;
+      box-shadow: 0 0 20px $blue,
+      0 0 40px $blue,
+      0 0 60px $blue;
+      @include shadow($blue);
+    }
+  }
+  header{
+    animation-name: showLightHeader;
+    @keyframes showLightHeader {
+      0% {
+        background: transparent;
+      }
+      20%, 100% {
+        background: $sand;
+        box-shadow: 0px 2px 2px 2px rgba(0, 0, 0, 0.75);
+      }
+    }
+  }
+
+}
+
